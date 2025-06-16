@@ -1,7 +1,7 @@
-pipeline{
+pipeline {
     agent any
 
-    stages{
+    stages {
         stage('Checkout') {
             steps {
                 // Checkout the code from the repository
@@ -9,7 +9,7 @@ pipeline{
             }
         }
 
-         stage('Check or Install Node.js') {
+        stage('Check or Install Node.js') {
             steps {
                 script {
                     def nodeInstalled = sh(script: 'command -v node', returnStatus: true) == 0
@@ -27,23 +27,24 @@ pipeline{
                     }
                 }
             }
-    }
+        }
 
-    stage('Install Dependencies') {
-        steps {
-            script {
-                // Install project dependencies
-                sh 'npm install'
+        stage('Install Dependencies') {
+            steps {
+                script {
+                    // Install project dependencies
+                    sh 'npm install'
+                }
             }
         }
-    }
 
-    stage('Run Tests') {
-        steps {
-            script {
-                // Run tests using npm
-                sh 'npm test'
+        stage('Run Tests') {
+            steps {
+                script {
+                    // Run tests using npm
+                    sh 'npm test'
+                }
             }
         }
-    }
-}
+    } // <-- closes stages
+} // <-- closes pipeline
