@@ -1,52 +1,49 @@
-pipeline {
+pipeline{
     agent any
 
-    environment {
-        NODE_VERSION = '18'
-    }
-
-    stages {
-        stage('Checkout Code') {
+    stages{
+        stage('Checkout') {
             steps {
+                // Checkout the code from the repository
                 checkout scm
             }
         }
 
-        stage('Install Node.js Manually') {
+         stage('Check or Install Node.js') {
             steps {
-                sh '''
-                curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
-                apt-get install -y nodejs
-                node -v
-                npm -v
-                '''
+                script {
+                    def nodeInstalled = sh(script: 'command -v node', returnStatus: true) == 0
+                    if (!nodeInstalled) {
+                        echo "Node.js not found. Installing latest version..."
+                        sh '''
+                            apt-get update
+                            apt-get install -y curl ca-certificates
+                            curl -fsSL https://deb.nodesource.com/setup_current.x | bash -
+                            apt-get install -y nodejs
+                        '''
+                    } else {
+                        echo "Node.js is already installed:"
+                        sh 'node -v && npm -v'
+                    }
+                }
             }
-        }
+    }
 
-        stage('Install Dependencies') {
-            steps {
+    stage('Install Dependencies') {
+        steps {
+            script {
+                // Install project dependencies
                 sh 'npm install'
-            }
-        }
-
-        stage('Start Application') {
-            steps {
-                sh 'npm run start &'
-                sleep(time: 5, unit: 'SECONDS')
-            }
-        }
-
-        stage('Run Tests') {
-            steps {
-                sh 'npm test'
             }
         }
     }
 
-    post {
-        always {
-            echo 'Cleaning up...'
-            sh 'pkill -f node || true'
+    stage('Run Tests') {
+        steps {
+            script {
+                // Run tests using npm
+                sh 'npm test'
+            }
         }
     }
 }
