@@ -5,10 +5,6 @@ pipeline {
         NODE_VERSION = '18' // Adjust to match your project's Node.js version
     }
 
-    tools {
-        nodejs "${NODE_VERSION}"
-    }
-
     stages {
         stage('Checkout Code') {
             steps {
