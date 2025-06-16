@@ -28,12 +28,12 @@ jobs:
     - name: Start unit tests
       run: npm test
       
-  deploy:
-    needs: units_tests
-    runs-on: ubuntu-latest
-    steps:
-      - uses: JorgeLNJunior/render-deploy@v1.4.5
-        with:
-          service_id: ${{ secrets.SERVICE_ID }}
-          api_key: ${{ secrets.RENDER_TOKEN }}
-          wait_deploy: true
+  # deploy:
+  #   needs: units_tests
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: JorgeLNJunior/render-deploy@v1.4.5
+  #       with:
+  #         service_id: ${{ secrets.SERVICE_ID }}
+  #         api_key: ${{ secrets.RENDER_TOKEN }}
+  #         wait_deploy: true
